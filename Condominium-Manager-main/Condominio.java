@@ -13,7 +13,7 @@ public class Condominio {
 
     // add a land plot to the array
     public boolean addLand(Terreno land) {
-        if (count >= MAX_LANDS || findLandByCode(land.getCodigo()) != null) {
+        if (count >= MAX_LANDS || findLandByCode(land.getCode()) != null) {
             return false;
         }
         lands[count++] = land;
@@ -23,7 +23,7 @@ public class Condominio {
     // remove a land plot by code
     public boolean removeLand(int code) {
         for (int i = 0; i < count; i++) {
-            if (lands[i].getCodigo() == code) {
+            if (lands[i].getCode() == code) {
                 for (int j = i; j < count - 1; j++) {
                     lands[j] = lands[j + 1];
                 }
@@ -47,7 +47,7 @@ public class Condominio {
     // find a land plot by owner's name
     public Terreno findLandByOwnerName(String ownerName) {
         for (int i = 0; i < count; i++) {
-            if (lands[i].getProprietario().getName().equalsIgnoreCase(ownerName)) {
+            if (lands[i].getOwner().getName().equalsIgnoreCase(ownerName)) {
                 return lands[i];
             }
         }
@@ -57,7 +57,7 @@ public class Condominio {
     // Find a land plot by code
     public Terreno findLandByCode(int code) {
         for (int i = 0; i < count; i++) {
-            if (lands[i].getCodigo() == code) {
+            if (lands[i].getCode() == code) {
                 return lands[i];
             }
         }
@@ -69,7 +69,7 @@ public class Condominio {
         if (count == 0) return null;
         Terreno maxLand = lands[0];
         for (int i = 1; i < count; i++) {
-            if (lands[i].getProprietario().getNumberOfResidents() > maxLand.getProprietario().getNumberOfResidents()) {
+            if (lands[i].getOwner().getNumberOfResidents() > maxLand.getOwner().getNumberOfResidents()) {
                 maxLand = lands[i];
             }
         }
@@ -80,7 +80,7 @@ public class Condominio {
     public boolean changeOwner(int code, Proprietario newOwner) {
         Terreno land = findLandByCode(code);
         if (land != null) {
-            land.setProprietario(newOwner);
+            land.setOwner(newOwner);
             return true;
         }
         return false;
@@ -90,7 +90,7 @@ public class Condominio {
     public boolean changeConstructionStatus(int code, boolean newStatus) {
         Terreno land = findLandByCode(code);
         if (land != null) {
-            land.setConstrucao(newStatus);
+            land.setConstruction(newStatus);
             return true;
         }
         return false;
@@ -100,7 +100,7 @@ public class Condominio {
     public double monthlyRevenue() {
         double total = 0;
         for (int i = 0; i < count; i++) {
-            total += lands[i].getValorMensal();
+            total += lands[i].getMonthValue();
         }
         return total;
     }

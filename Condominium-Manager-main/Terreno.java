@@ -1,26 +1,26 @@
 public class Terreno {
-    private int codigo;
+    private int code;
     private double base;
-    private double altura;
-    private double valorMensal;
-    private Proprietario proprietario;
-    private boolean construcao;
+    private double height;
+    private double monthValue;
+    private Proprietario owner;
+    private boolean construction;
 
-    public Terreno(int codigo, double base, double altura, double valorMensal, Proprietario proprietario, boolean construcao) {
-        this.codigo = codigo;
+    public Terreno(int code, double base, double height, double monthValue, Proprietario owner, boolean construction) {
+        this.code = code;
         this.base = base;
-        this.altura = altura;
-        this.valorMensal = valorMensal;
-        this.proprietario = proprietario;
-        this.construcao = construcao;
+        this.height = height;
+        this.monthValue = monthValue;
+        this.owner = owner;
+        this.construction = construction;
     }
 
-    public int getCodigo() {
-        return codigo;
+    public int getCode() {
+        return code;
     }
 
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public double getBase() {
@@ -31,48 +31,48 @@ public class Terreno {
         this.base = base;
     }
 
-    public double getAltura() {
-        return altura;
+    public double getHeight() {
+        return height;
     }
 
-    public void setAltura(double altura) {
-        this.altura = altura;
+    public void setHeight(double height) {
+        this.height = height;
     }
 
-    public double getValorMensal() {
-        return valorMensal;
+    public double getMonthValue() {
+        return monthValue;
     }
 
-    public void setValorMensal(double valorMensal) {
-        this.valorMensal = valorMensal;
+    public void setMonthValue(double monthValue) {
+        this.monthValue = monthValue;
     }
 
-    public Proprietario getProprietario() {
-        return proprietario;
+    public Proprietario getOwner() {
+        return owner;
     }
 
-    public void setProprietario(Proprietario proprietario) {
-        this.proprietario = proprietario;
+    public void setOwner(Proprietario owner) {
+        this.owner = owner;
     }
 
-    public boolean isConstrucao() {
-        return construcao;
+    public boolean isConstruction() {
+        return construction;
     }
 
-    public void setConstrucao(boolean construcao) {
-        this.construcao = construcao;
+    public void setConstruction(boolean construction) {
+        this.construction = construction;
     }
 
     public double calcularArea() {
-        return base*altura;
+        return base*height;
     }
 
     public String toString() {
-        return "Terreno{" + "código=" + codigo +
+        return "Terreno{" + "code=" + code +
                 ", base=" + base
-                + ", altura=" + altura
-                + ", valorMensal=" + valorMensal
-                + ", proprietario=" + proprietario
-                + ", construcao=" + construcao + '}';
+                + ", height=" + height
+                + ", monthValue=" + monthValue
+                + ", owner=" + owner
+                + ", construction=" + construction + '}';
     }
 }

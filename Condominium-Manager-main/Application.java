@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Application {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Condominio condominium = new Condominio();
+        Condominium condominium = new Condominium();
         int option;
 
         do {
@@ -13,25 +13,25 @@ public class Application {
 
             switch (option) {
                 case 1:
-                    addLand(condominium, scanner);
+                    addLot(condominium, scanner);
                     break;
                 case 2:
-                    removeLand(condominium, scanner);
+                    removeLot(condominium, scanner);
                     break;
                 case 3:
-                    showAllLands(condominium);
+                    showAllLots(condominium);
                     break;
                 case 4:
-                    searchLandByOwner(condominium, scanner);
+                    searchLotByOwner(condominium, scanner);
                     break;
                 case 5:
-                    showSmallestLand(condominium);
+                    showSmallestLot(condominium);
                     break;
                 case 6:
-                    showLargestFamilyLand(condominium);
+                    showMostResidentsLot(condominium);
                     break;
                 case 7:
-                    changeLandOwner(condominium, scanner);
+                    changeLotOwner(condominium, scanner);
                     break;
                 case 8:
                     changeConstructionStatus(condominium, scanner);
@@ -47,44 +47,37 @@ public class Application {
             }
         } while (option != 10);
     }
-
+    
+    // Print main menu:
     private static void printMenu() {
-        System.out.println("\n------ Condominium Land Management ------");
-        System.out.println("1 - Add land");
-        System.out.println("2 - Remove land");
-        System.out.println("3 - Show all lands");
-        System.out.println("4 - Search and show land by owner's name");
-        System.out.println("5 - Show land with smallest area");
-        System.out.println("6 - Show land with largest family");
-        System.out.println("7 - Change land owner");
-        System.out.println("8 - Change construction status");
+        System.out.println("\n------ Condominium Management ------");
+        System.out.println("1 - Add lot");
+        System.out.println("2 - Remove lot");
+        System.out.println("3 - Show all lots");
+        System.out.println("4 - Locate lot by owner's name");
+        System.out.println("5 - Show lot with smallest area");
+        System.out.println("6 - Show lot with most residents");
+        System.out.println("7 - Change lot owner");
+        System.out.println("8 - Change lot construction status");
         System.out.println("9 - Show monthly revenue");
         System.out.println("10 - Exit");
         System.out.print("Choose an option: ");
     }
-
-    private static void addLand(Condominio condominium, Scanner scanner) {
-        int code, residents, occupation;
-        double base, height, monthlyValue;
+    
+    // Create and add a lot:
+    private static void addLot(Condominium condominium, Scanner scanner) {
+        int residents, occupation;
+        double width, depth, monthlyValue;
         String ownerName;
         boolean construction = false;
 
-        System.out.print("Enter land code: ");
-        code = scanner.nextInt();
-        scanner.nextLine();
+        System.out.print("Enter lot width: ");
+        width = scanner.nextDouble();
 
-        if (condominium.findLandByCode(code) != null) {
-            System.out.println("Land with this code already exists!");
-            return;
-        }
+        System.out.print("Enter lot depth: ");
+        depth = scanner.nextDouble();
 
-        System.out.print("Enter base: ");
-        base = scanner.nextDouble();
-
-        System.out.print("Enter height: ");
-        height = scanner.nextDouble();
-
-        System.out.print("Enter monthly value: ");
+        System.out.print("Enter monthly fee: ");
         monthlyValue = scanner.nextDouble();
         scanner.nextLine();
 
@@ -108,81 +101,87 @@ public class Application {
             return;
         }
 
-        Proprietario owner = new Proprietario(ownerName, residents);
-        Terreno land = new Terreno(code, base, height, monthlyValue, owner, construction);
+        Landowner owner = new Landowner(ownerName, residents);
+        Lot land = new Lot(width, depth, monthlyValue, owner, construction);
 
-        if (condominium.addLand(land)) {
-            System.out.println("Land added successfully!");
+        if (condominium.addLot(land)) {
+            System.out.println("Lot  has been registered successfully!");
         } else {
-            System.out.println("Could not add land!");
+            System.out.println("Error. Lot could not be registered!");
         }
     }
-
-    private static void removeLand(Condominio condominium, Scanner scanner) {
+    
+    // Remove a lot from de database:
+    private static void removeLot(Condominium condominium, Scanner scanner) {
         int removeCode;
 
-        System.out.print("Enter land code to remove: ");
+        System.out.print("Enter the code of the lot to be removed: ");
         removeCode = scanner.nextInt();
         scanner.nextLine();
 
-        if (condominium.removeLand(removeCode)) {
-            System.out.println("Land removed successfully!");
+        if (condominium.removeLot(removeCode)) {
+            System.out.println("Lot removed successfully!");
         } else {
-            System.out.println("Could not remove land!");
+            System.out.println("Error. Lot could not be removed!");
         }
     }
-
-    private static void showAllLands(Condominio condominium) {
-        condominium.showLands();
+    
+    // Show all currently registered lots in the database:
+    private static void showAllLots(Condominium condominium) {
+        condominium.showLotDatabase();
     }
-
-    private static void searchLandByOwner(Condominio condominium, Scanner scanner) {
+    
+    // Search and show lot by owner name:
+    private static void searchLotByOwner(Condominium condominium, Scanner scanner) {
         String searchOwner;
 
         System.out.print("Enter owner's name: ");
         searchOwner = scanner.nextLine();
 
-        Terreno foundLand = condominium.findLandByOwnerName(searchOwner);
+        Lot locatedLot = condominium.locateLotByOwnerName(searchOwner);
 
-        if (foundLand != null) {
-            System.out.println(foundLand);
+        if (locatedLot != null) {
+            System.out.println(locatedLot);
         } else {
-            System.out.println("No land found for this owner.");
+            System.out.println("No lot has been assigned to this owner.");
         }
     }
-
-    private static void showSmallestLand(Condominio condominium) {
-        Terreno smallest = condominium.findSmallestLand();
+    
+    // Show lot with the smallest area:
+    private static void showSmallestLot(Condominium condominium) {
+        Lot smallest = condominium.locateSmallestLot();
 
         if (smallest != null) {
             System.out.println(smallest);
         } else {
-            System.out.println("No lands registered.");
+            System.out.println("No lots have been registered.");
         }
     }
-
-    private static void showLargestFamilyLand(Condominio condominium) {
-        Terreno largestFamily = condominium.findLandWithLargestFamily();
+    
+    // Show lot with the most residents:
+    private static void showMostResidentsLot(Condominium condominium) {
+        Lot largestFamily = condominium.locateLotWithMostResidents();
 
         if (largestFamily != null) {
             System.out.println(largestFamily);
         } else {
-            System.out.println("No lands registered.");
+            System.out.println("No lots have been registered.");
         }
     }
-
-    private static void changeLandOwner(Condominio condominium, Scanner scanner) {
+    
+    // Change the owner of a lot:
+    private static void changeLotOwner(Condominium condominium, Scanner scanner) {
         int changeOwnerCode, newResidents;
         String newOwnerName;
 
-        System.out.print("Enter land code: ");
+        System.out.print("Enter lot code: ");
         changeOwnerCode = scanner.nextInt();
         scanner.nextLine();
 
-        Terreno landToChangeOwner = condominium.findLandByCode(changeOwnerCode);
+        Lot lotToChangeOwner = condominium.locateLotByCode(changeOwnerCode);
 
-        if (landToChangeOwner == null) {
-            System.out.println("Land not found.");
+        if (lotToChangeOwner == null) {
+            System.out.println("Lot does no exist..");
             return;
         }
 
@@ -193,26 +192,27 @@ public class Application {
         newResidents = scanner.nextInt();
         scanner.nextLine();
 
-        Proprietario newOwner = new Proprietario(newOwnerName, newResidents);
+        Landowner newOwner = new Landowner(newOwnerName, newResidents);
 
         if (condominium.changeOwner(changeOwnerCode, newOwner)) {
-            System.out.println("Owner changed successfully!");
+            System.out.println("Owner updated successfully!");
         } else {
-            System.out.println("Could not change owner!");
+            System.out.println("Error. Owner could not be changed!");
         }
     }
 
-    private static void changeConstructionStatus(Condominio condominium, Scanner scanner) {
+    // Change the construction status of a lot:
+    private static void changeConstructionStatus(Condominium condominium, Scanner scanner) {
         int changeConstrCode, newConstrStatus;
 
-        System.out.print("Enter land code: ");
+        System.out.print("Enter the code of the lot to be updated: ");
         changeConstrCode = scanner.nextInt();
         scanner.nextLine();
 
-        Terreno landToChangeConstr = condominium.findLandByCode(changeConstrCode);
+        Lot lotToChangeConstr = condominium.locateLotByCode(changeConstrCode);
 
-        if (landToChangeConstr == null) {
-            System.out.println("Land not found.");
+        if (lotToChangeConstr == null) {
+            System.out.println("Lot does not exist.");
             return;
         }
 
@@ -234,11 +234,12 @@ public class Application {
         if (condominium.changeConstructionStatus(changeConstrCode, newConstrBool)) {
             System.out.println("Construction status changed successfully!");
         } else {
-            System.out.println("Could not change construction status!");
+            System.out.println("Error. Construction statuts could not be changed!");
         }
     }
 
-    private static void showMonthlyRevenue(Condominio condominium) {
-        System.out.println("Monthly revenue: " + condominium.monthlyRevenue());
+    // Show condominium monthly revenue from all lots:
+    private static void showMonthlyRevenue(Condominium condominium) {
+        System.out.println("\nMonthly revenue: " + condominium.monthlyRevenue());
     }
 }

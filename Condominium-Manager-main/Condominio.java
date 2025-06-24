@@ -1,140 +1,152 @@
 import java.util.Arrays;
 
-public class Condominio {
-    private Terreno[] lands;
-    private int count;
-    private static final int MAX_LANDS = 30;
+public class Condominium {
+    private Lot[] lotDatabase;  
+    private int index;
+    private static final int MAX_LOTS = 30;
 
-    // constructor
-    public Condominio() {
-        this.lands = new Terreno[MAX_LANDS];
-        this.count = 0;
+    // Constructor
+    public Condominium() {
+        this.lotDatabase = new Lot[MAX_LOTS];
+        this.index = 0;
     }
 
-    // add a land plot to the array
-    public boolean addLand(Terreno land) {
-        if (count >= MAX_LANDS || findLandByCode(land.getCode()) != null) {
+    // Add a lot to the database array.
+    // If array is maxed out or lot is already in the database, returns false. If registration is successful, returns true.
+    public boolean addLot(Lot lot) {
+        if (index >= MAX_LOTS || locateLotByCode(lot.getCode()) != null) {
             return false;
+        } else {
+            this.lotDatabase[index++] = lot;
+            return true;
         }
-        lands[count++] = land;
-        return true;
     }
 
-    // remove a land plot by code
-    public boolean removeLand(int code) {
-        for (int i = 0; i < count; i++) {
-            if (lands[i].getCode() == code) {
-                for (int j = i; j < count - 1; j++) {
-                    lands[j] = lands[j + 1];
+    // Remove a lot from the database by code:
+    // If lot exists in the database, it is removed and the array is rearranged, and method returns true. Otherwise, it returns false.
+    public boolean removeLot(int code) {
+        for (int i = 0; i < index; i++) {
+            if (lotDatabase[i].getCode() == code) {
+                for (int j = i; j < index - 1; j++) {
+                    lotDatabase[j] = lotDatabase[j + 1];
                 }
-                lands[--count] = null;
+                lotDatabase[--index] = null;
                 return true;
             }
         }
         return false;
     }
 
-    // find the position of a land plot in the array
-    public int findPosition(Terreno land) {
-        for (int i = 0; i < count; i++) {
-            if (lands[i].equals(land)) {
+    // Locate the position of a lot in the database array:
+    // Locates position of the lot and returns it. If lot does not exist in the database, returns -1.
+    public int locatePosition(Lot lot) {
+        for (int i = 0; i < index; i++) {
+            if (lotDatabase[i].equals(lot)) {
                 return i;
             }
         }
         return -1;
     }
 
-    // find a land plot by owner's name
-    public Terreno findLandByOwnerName(String ownerName) {
-        for (int i = 0; i < count; i++) {
-            if (lands[i].getOwner().getName().equalsIgnoreCase(ownerName)) {
-                return lands[i];
+    // Locate a lot in the database by owner name:
+    // Locates lot by owner name and returns it. If lot does not exist, returns null.
+    public Lot locateLotByOwnerName(String ownerName) {
+        for (int i = 0; i < index; i++) {
+            if (lotDatabase[i].getOwner().getName().equalsIgnoreCase(ownerName)) {
+                return lotDatabase[i];
             }
         }
         return null;
     }
 
-    // Find a land plot by code
-    public Terreno findLandByCode(int code) {
-        for (int i = 0; i < count; i++) {
-            if (lands[i].getCode() == code) {
-                return lands[i];
+    // Locate a lot in the database by code:
+    // Locates lot by code and returns it. If lot does not exist, returns null.
+    public Lot locateLotByCode(int code) {
+        for (int i = 0; i < index; i++) {
+            if (lotDatabase[i].getCode() == code) {
+                return lotDatabase[i];
             }
         }
         return null;
     }
 
-    // find the land with the largest family
-    public Terreno findLandWithLargestFamily() {
-        if (count == 0) return null;
-        Terreno maxLand = lands[0];
-        for (int i = 1; i < count; i++) {
-            if (lands[i].getOwner().getNumberOfResidents() > maxLand.getOwner().getNumberOfResidents()) {
-                maxLand = lands[i];
+    // Locate lot with the most residents:
+    // Locates the lot with the largest family and returns it. If no lots have been added to the database, returns null.
+    public Lot locateLotWithMostResidents() {
+        if (index == 0)
+            return null;
+        Lot maxPopLot = lotDatabase[0];
+        for (int i = 1; i < index; i++) {
+            if (lotDatabase[i].getOwner().getNumberOfResidents() > maxPopLot.getOwner().getNumberOfResidents()) {
+                maxPopLot = lotDatabase[i];
             }
         }
-        return maxLand;
+        return maxPopLot;
     }
 
-    // change the owner of a land plot
-    public boolean changeOwner(int code, Proprietario newOwner) {
-        Terreno land = findLandByCode(code);
-        if (land != null) {
-            land.setOwner(newOwner);
+    // Change the owner of a lot:
+    // Replace the landowner of a lot with a new owner and returns true. If lot code does not exist, returns false.
+    public boolean changeOwner(int code, Landowner newOwner) {
+        Lot lot = locateLotByCode(code);
+        if (lot != null) {
+            lot.setOwner(newOwner);
             return true;
         }
         return false;
     }
 
-    // change the construction status of a land plot
+    // Change occupancy status of a lot:
+    // Locates a lot by code and changes it's occupancy status. If lot does not exist, returns false.
     public boolean changeConstructionStatus(int code, boolean newStatus) {
-        Terreno land = findLandByCode(code);
-        if (land != null) {
-            land.setConstruction(newStatus);
+        Lot lot = locateLotByCode(code);
+        if (lot != null) {
+            lot.setConstruction(newStatus);
             return true;
         }
         return false;
     }
 
-    // calculate the total monthly revenue
+    // Calculate the total monthly revenue:
     public double monthlyRevenue() {
         double total = 0;
-        for (int i = 0; i < count; i++) {
-            total += lands[i].getMonthValue();
+        for (int i = 0; i < index; i++) {
+            total += lotDatabase[i].getMonthlyFee();
         }
         return total;
     }
 
-    // find the land with the smallest area
-    public Terreno findSmallestLand() {
-        if (count == 0) return null;
-        Terreno minLand = lands[0];
-        for (int i = 1; i < count; i++) {
-            if (lands[i].calcularArea() < minLand.calcularArea()) {
-                minLand = lands[i];
+    // Locate the lot with the smallest area:
+    // If no lots have been added to the database, returns null. Otherwise, returns the smallest lot.
+    public Lot locateSmallestLot() {
+        if (index == 0)
+            return null;
+        Lot minAreaLot = lotDatabase[0];
+        for (int i = 1; i < index; i++) {
+            if (lotDatabase[i].calculateArea() < minAreaLot.calculateArea()) {
+                minAreaLot = lotDatabase[i];
             }
         }
-        return minLand;
+        return minAreaLot;
     }
 
-    // show all stored lands
-    public void showLands() {
-        if (count == 0) {
-            System.out.println("No lands registered.");
+    // Show all lot database:
+    public void showLotDatabase() {
+        if (index == 0) {
+            System.out.println("No lots hace been registered.");
         } else {
-            for (int i = 0; i < count; i++) {
-                System.out.println(lands[i]);
+            for (int i = 0; i < index; i++) {
+                System.out.println(lotDatabase[i]);
             }
         }
     }
 
-    // get the number of lands
-    public int getCount() {
-        return count;
+    // Get the number of lots in the database.
+    public int getIndex() {
+        return index;
     }
 
-    // get a copy of the lands array (for iteration)
-    public Terreno[] getLands() {
-        return Arrays.copyOf(lands, count);
+    // Get a copy of the lotDatabase array (for iteration):
+    public Lot[] getLotDatabase() {
+        return Arrays.copyOf(lotDatabase, index);
     }
 } 
